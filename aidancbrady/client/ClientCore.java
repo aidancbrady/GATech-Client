@@ -6,7 +6,7 @@ public class ClientCore
 {
 	private static ClientCore instance;
 	
-	public boolean connected = false;
+	public ConnectionState state = ConnectionState.DISCONNECTED;
 	
 	public String username = "";
 	
@@ -34,7 +34,7 @@ public class ClientCore
 				wait();
 			}
 			
-			if(activeConnection != null && connected)
+			if(activeConnection != null && state == ConnectionState.CONNECTED)
 			{
 				activeConnection.socket.close();
 			}
@@ -46,9 +46,16 @@ public class ClientCore
 		}
 	}
 	
+	public void updateState(ConnectionState connection)
+	{
+		state = connection;
+		theGui.connectedLabel.setText(state.friendly + " -");
+	}
+	
 	public void setUsername(String name)
 	{
 		username = name;
+		theGui.usernameLabel.setText(name);
 	}
 	
 	public void connect()
@@ -68,9 +75,7 @@ public class ClientCore
 		try {
 			(activeConnection = new SocketConnection()).start();
 			
-			connected = true;
-			
-			theGui.connectedLabel.setText("Connected -");
+			updateState(ConnectionState.CONNECTING);
 			
 			theGui.setPortButton.setEnabled(false);
 			theGui.connectionField.setEnabled(false);
@@ -84,11 +89,17 @@ public class ClientCore
 	public void disconnect()
 	{
 		try {
-			activeConnection.socket.close();
+			if(activeConnection == null)
+			{
+				return;
+			}
 			
-			connected = false;
+			if(activeConnection.socket != null)
+			{
+				activeConnection.socket.close();
+			}
 			
-			theGui.connectedLabel.setText("Idle -");
+			updateState(ConnectionState.DISCONNECTED);
 			
 			theGui.setPortButton.setEnabled(true);
 			theGui.connectionField.setEnabled(true);
@@ -102,5 +113,21 @@ public class ClientCore
 	public static ClientCore instance()
 	{
 		return instance;
+	}
+	
+	public static enum ConnectionState
+	{
+		CONNECTED("yes", "Connected"),
+		DISCONNECTED("no", "Idle"),
+		CONNECTING("in progress", "Connecting");
+		
+		public String description;
+		public String friendly;
+		
+		private ConnectionState(String desc, String friend)
+		{
+			description = desc;
+			friendly = friend;
+		}
 	}
 }

@@ -9,6 +9,8 @@ import java.net.SocketException;
 
 import javax.swing.JOptionPane;
 
+import aidancbrady.client.ClientCore.ConnectionState;
+
 public class SocketConnection extends Thread
 {
 	public Socket socket;
@@ -17,12 +19,16 @@ public class SocketConnection extends Thread
 	
 	public PrintWriter printWriter;
 	
+	public boolean hasConnection = false;
+	
 	@Override
 	public void run()
 	{
 		try {
 			InetAddress address = InetAddress.getByName(ClientCore.instance().serverIP);
+			new ThreadConnect(this).start();
 			socket = new Socket(address, ClientCore.instance().serverPort);
+			hasConnection = true;
 			
 			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
@@ -41,6 +47,12 @@ public class SocketConnection extends Thread
 					ClientCore.instance().disconnect();
 					return;
 				}
+				else if(readerLine.trim().startsWith("/user"))
+				{
+					String[] split = readerLine.trim().split(":");
+					ClientCore.instance().setUsername(split[1]);
+					continue;
+				}
 				
 				ClientCore.instance().theGui.appendChat(readerLine.trim());
 			}
@@ -48,7 +60,7 @@ public class SocketConnection extends Thread
 			printWriter.close();
 			socket.close();
 			
-			ClientCore.instance().connected = false;
+			ClientCore.instance().disconnect();
 			
 			finalize();
 		} catch(SocketException e) {

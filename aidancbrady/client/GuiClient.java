@@ -26,6 +26,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import aidancbrady.client.ClientCore.ConnectionState;
+
 public class GuiClient extends JFrame implements WindowListener
 {
 	private static final long serialVersionUID = 1L;
@@ -90,7 +92,7 @@ public class GuiClient extends JFrame implements WindowListener
 				}
 				
 				Vector<String> statsVector = new Vector<String>();
-				statsVector.add("Connected: " + ClientCore.instance().connected);
+				statsVector.add("Connected: " + ClientCore.instance().state.description);
 				//statsVector.add("Online count: " + ServerCore.instance().connections.size());
 				statsVector.add("Active threads: " + Thread.activeCount());
 				statsVector.add("Active memory: " + (int)((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1000000) + "MB");
@@ -335,8 +337,21 @@ public class GuiClient extends JFrame implements WindowListener
 				return;
 			}
 			
-			ClientCore.instance().setUsername(usernameField.getText());
-			usernameLabel.setText(usernameField.getText());
+			if(usernameField.getText().equals(ClientCore.instance().username))
+			{
+				return;
+			}
+			
+			if(ClientCore.instance().state != ConnectionState.CONNECTED)
+			{
+				ClientCore.instance().setUsername(usernameField.getText());
+			}
+			
+			if(ClientCore.instance().state == ConnectionState.CONNECTED)
+			{
+				ClientCore.instance().activeConnection.printWriter.println("/user:" + usernameField.getText());
+			}
+			
 			usernameField.setText("");
 		}
 	}
@@ -346,7 +361,7 @@ public class GuiClient extends JFrame implements WindowListener
 		@Override
 		public void actionPerformed(ActionEvent arg0) 
 		{
-			if(!ClientCore.instance().connected)
+			if(ClientCore.instance().state == ConnectionState.DISCONNECTED)
 			{
 				String command = connectionField.getText().trim().toLowerCase();
 				
@@ -391,7 +406,7 @@ public class GuiClient extends JFrame implements WindowListener
 					return;
 				}
 				
-				if(ClientCore.instance().connected)
+				if(ClientCore.instance().state == ConnectionState.CONNECTED && ClientCore.instance().activeConnection.printWriter != null)
 				{
 					appendChat("You: " + command);
 					ClientCore.instance().activeConnection.printWriter.println(command);
