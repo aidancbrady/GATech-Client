@@ -36,21 +36,23 @@ public class GuiClient extends JFrame implements WindowListener
 	
 	public JList onlineUsersList;
 	
-	public JPanel serverControlPanel;
-	
 	public JButton setPortButton;
 	
-	public JButton startServerButton;
+	public JButton connectButton;
 	
-	public JButton stopServerButton;
+	public JButton disconnectButton;
 	
-	public JTextField portEntry;
+	public JTextField connectionField;
 	
 	public JLabel portLabel;
 	
 	public JLabel connectedLabel;
 	
 	public JTextField chatField;
+	
+	public JLabel usernameLabel;
+	
+	public JTextField usernameField;
 	
 	public boolean isOpen = true;
 	
@@ -106,11 +108,11 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		JPanel completePanel = new JPanel(new BorderLayout());
 		
-		JPanel rightInfoPanel = new JPanel(new BorderLayout());
-		rightInfoPanel.setPreferredSize(new Dimension(206, 800));
-		
 		JPanel leftInfoPanel = new JPanel(new BorderLayout());
 		leftInfoPanel.setPreferredSize(new Dimension(206, 800));
+		
+		JPanel rightInfoPanel = new JPanel(new BorderLayout());
+		rightInfoPanel.setPreferredSize(new Dimension(206, 800));
 		
 		setBackground(Color.LIGHT_GRAY);
 		setResizable(false);
@@ -154,16 +156,16 @@ public class GuiClient extends JFrame implements WindowListener
 		onlineUsersList.setBackground(Color.GRAY);
 		onlineUsersList.setToolTipText("The users currently connected to this server.");
 		JScrollPane onlinePane = new JScrollPane(onlineUsersList);
-		leftInfoPanel.add(onlinePane);
+		rightInfoPanel.add(onlinePane);
 		//End user list panel
 		
 		//Start port setter panel
-		serverControlPanel = new JPanel();
+		JPanel serverControlPanel = new JPanel();
 		serverControlPanel.setBorder(new TitledBorder(new EtchedBorder(), "Server Control"));
 		serverControlPanel.setVisible(true);
 		serverControlPanel.setBackground(Color.GRAY);
 		serverControlPanel.setFocusable(false);
-		serverControlPanel.setPreferredSize(new Dimension(206-15, 290));
+		serverControlPanel.setPreferredSize(new Dimension(206-15, 180));
 		serverControlPanel.setToolTipText("Set this server's active port to a new value.");
 		
 		connectedLabel = Util.getWithFont(new JLabel("Idle -"), new Font("Arial", Font.BOLD, 14));
@@ -172,25 +174,24 @@ public class GuiClient extends JFrame implements WindowListener
 		portLabel = new JLabel("N/A");
 		serverControlPanel.add(portLabel);
 		
-		portEntry = new JTextField();
-		portEntry.setFocusable(true);
-		portEntry.setText("");
-		portEntry.setPreferredSize(new Dimension(140, 20));
-		portEntry.addActionListener(new SetPortListener());
-		serverControlPanel.add(portEntry, "North");
+		connectionField = new JTextField();
+		connectionField.setFocusable(true);
+		connectionField.setText("");
+		connectionField.setPreferredSize(new Dimension(140, 20));
+		connectionField.addActionListener(new SetPortListener());
+		serverControlPanel.add(connectionField, "North");
 		
 		setPortButton = new JButton("Confirm");
 		setPortButton.setFocusable(true);
 		setPortButton.setPreferredSize(new Dimension(120, 25));
 		setPortButton.addActionListener(new SetPortListener());
-		
 		serverControlPanel.add(setPortButton, "Center");
 		
-		startServerButton = new JButton("Connect");
-		startServerButton.setFocusable(true);
-		startServerButton.setPreferredSize(new Dimension(80, 25));
-		startServerButton.setEnabled(true);
-		startServerButton.addActionListener(new ActionListener() 
+		connectButton = new JButton("Connect");
+		connectButton.setFocusable(true);
+		connectButton.setPreferredSize(new Dimension(80, 25));
+		connectButton.setEnabled(true);
+		connectButton.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
@@ -198,14 +199,13 @@ public class GuiClient extends JFrame implements WindowListener
 				ClientCore.instance().connect();
 			}
 		});
+		serverControlPanel.add(connectButton, "South");
 		
-		serverControlPanel.add(startServerButton, "South");
-		
-		stopServerButton = new JButton("Disconnect");
-		stopServerButton.setFocusable(true);
-		stopServerButton.setPreferredSize(new Dimension(80, 25));
-		stopServerButton.setEnabled(false);
-		stopServerButton.addActionListener(new ActionListener() 
+		disconnectButton = new JButton("Disconnect");
+		disconnectButton.setFocusable(true);
+		disconnectButton.setPreferredSize(new Dimension(100, 25));
+		disconnectButton.setEnabled(false);
+		disconnectButton.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
@@ -213,11 +213,41 @@ public class GuiClient extends JFrame implements WindowListener
 				ClientCore.instance().disconnect();
 			}
 		});
-	
-		serverControlPanel.add(stopServerButton, "South");
+		serverControlPanel.add(disconnectButton, "South");
 		
-		rightInfoPanel.add(serverControlPanel, "North");
+		leftInfoPanel.add(serverControlPanel, "North");
 		//End port setter panel
+		
+		//Start username panel
+		JPanel usernamePanel = new JPanel();
+		usernamePanel.setBorder(new TitledBorder(new EtchedBorder(), "Username"));
+		usernamePanel.setVisible(true);
+		usernamePanel.setBackground(Color.GRAY);
+		usernamePanel.setFocusable(false);
+		usernamePanel.setPreferredSize(new Dimension(206-15, 200));
+		usernamePanel.setToolTipText("Set your username to a new value.");
+		
+		JLabel sideLabel = new JLabel("Username:");
+		usernamePanel.add(sideLabel, "North");
+		
+		usernameLabel = Util.getWithFont(new JLabel("Undefined"), new Font("Arial", Font.BOLD, 14));
+		usernamePanel.add(usernameLabel, "North");
+		
+		usernameField = new JTextField();
+		usernameField.setFocusable(true);
+		usernameField.setText("");
+		usernameField.setPreferredSize(new Dimension(140, 20));
+		usernameField.addActionListener(new UsernameListener());
+		usernamePanel.add(usernameField, "Center");
+		
+		JButton usernameButton = new JButton("Confirm");
+		usernameButton.setFocusable(true);
+		usernameButton.setPreferredSize(new Dimension(80, 25));
+		usernameButton.addActionListener(new UsernameListener());
+		usernamePanel.add(usernameButton, "South");
+		
+		leftInfoPanel.add(usernamePanel);
+		//End username panel
 		
 		//Start statistics panel
 		statistics = new JList();
@@ -231,13 +261,12 @@ public class GuiClient extends JFrame implements WindowListener
 		statistics.setVisible(true);
 		statistics.setBackground(Color.GRAY);
 		statistics.setFocusable(false);
-		statistics.setPreferredSize(new Dimension(206-15, 164));
 		statistics.setToolTipText("Statistics regarding this server.");
-		rightInfoPanel.add(new JScrollPane(statistics));
+		leftInfoPanel.add(new JScrollPane(statistics), "South");
 		//End statistics panel
 		
-		completePanel.add(rightInfoPanel, "West");
-		completePanel.add(leftInfoPanel, "East");
+		completePanel.add(leftInfoPanel, "West");
+		completePanel.add(rightInfoPanel, "East");
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		
@@ -296,6 +325,22 @@ public class GuiClient extends JFrame implements WindowListener
 		chatBox.setCaretPosition(chatBox.getText().length() - 1);
 	}
 	
+	public class UsernameListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent arg0)
+		{
+			if(usernameField.getText() == null || usernameField.getText().equals(""))
+			{
+				return;
+			}
+			
+			ClientCore.instance().setUsername(usernameField.getText());
+			usernameLabel.setText(usernameField.getText());
+			usernameField.setText("");
+		}
+	}
+	
 	public class SetPortListener implements ActionListener
 	{
 		@Override
@@ -303,7 +348,7 @@ public class GuiClient extends JFrame implements WindowListener
 		{
 			if(!ClientCore.instance().connected)
 			{
-				String command = portEntry.getText().trim().toLowerCase();
+				String command = connectionField.getText().trim().toLowerCase();
 				
 				if(command == null || command.equals(""))
 				{
@@ -316,17 +361,17 @@ public class GuiClient extends JFrame implements WindowListener
 					if(split.length != 2 || !Util.isVaildIP(split[0]))
 					{
 						JOptionPane.showMessageDialog(GuiClient.this, "Please enter a valid IPv4 address.\nX.X.X.X:X");
-						portEntry.setText("");
+						connectionField.setText("");
 						return;
 					}
 					
 					ClientCore.instance().serverIP = split[0];
 					ClientCore.instance().serverPort = Integer.parseInt(split[1]);
 					portLabel.setText(ClientCore.instance().serverIP + ":" + ClientCore.instance().serverPort);
-					portEntry.setText("");
+					connectionField.setText("");
 				} catch(Exception e) {
 					JOptionPane.showMessageDialog(GuiClient.this, "Invalid characters.", "Warning", JOptionPane.WARNING_MESSAGE);
-					portEntry.setText("");
+					connectionField.setText("");
 				}
 			}
 		}
@@ -346,25 +391,10 @@ public class GuiClient extends JFrame implements WindowListener
 					return;
 				}
 				
-				if(command.startsWith("/"))
+				if(ClientCore.instance().connected)
 				{
-					command = command.substring(1);
-					String[] commandArgs = command.split(" ");
-					
-					if(command.equals("quit"))
-					{
-						windowClosing(null);
-					}
-					else {
-						appendChat("Unknown command.");
-					}
-				}
-				else {
-					if(ClientCore.instance().connected)
-					{
-						appendChat("You: " + command);
-						ClientCore.instance().activeConnection.printWriter.println(command);
-					}
+					appendChat("You: " + command);
+					ClientCore.instance().activeConnection.printWriter.println(command);
 				}
 			} catch (Exception e) {
 				appendChat("Error: " + e.getMessage());

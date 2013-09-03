@@ -1,12 +1,14 @@
 package aidancbrady.client;
 
+import javax.swing.JOptionPane;
+
 public class ClientCore
 {
 	private static ClientCore instance;
 	
 	public boolean connected = false;
 	
-	public String username;
+	public String username = "";
 	
 	public SocketConnection activeConnection;
 	
@@ -36,16 +38,30 @@ public class ClientCore
 			{
 				activeConnection.socket.close();
 			}
+			
+			System.exit(0);
 		} catch(Exception e) {
 			System.out.println("Error: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
+	public void setUsername(String name)
+	{
+		username = name;
+	}
+	
 	public void connect()
 	{
 		if(serverPort == -1 || serverIP.equals("0.0.0.0"))
 		{
+			JOptionPane.showMessageDialog(theGui, "Please define an IP and port before continuing.", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		
+		if(username.equals(""))
+		{
+			JOptionPane.showMessageDialog(theGui, "Please define a username before continuing.", "Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		
@@ -57,9 +73,9 @@ public class ClientCore
 			theGui.connectedLabel.setText("Connected -");
 			
 			theGui.setPortButton.setEnabled(false);
-			theGui.portEntry.setEnabled(false);
-			theGui.startServerButton.setEnabled(false);
-			theGui.stopServerButton.setEnabled(true);
+			theGui.connectionField.setEnabled(false);
+			theGui.connectButton.setEnabled(false);
+			theGui.disconnectButton.setEnabled(true);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -75,9 +91,9 @@ public class ClientCore
 			theGui.connectedLabel.setText("Idle -");
 			
 			theGui.setPortButton.setEnabled(true);
-			theGui.portEntry.setEnabled(true);
-			theGui.startServerButton.setEnabled(true);
-			theGui.stopServerButton.setEnabled(false);
+			theGui.connectionField.setEnabled(true);
+			theGui.connectButton.setEnabled(true);
+			theGui.disconnectButton.setEnabled(false);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

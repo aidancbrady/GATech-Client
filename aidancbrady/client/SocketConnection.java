@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+import javax.swing.JOptionPane;
+
 public class SocketConnection extends Thread
 {
 	public Socket socket;
@@ -25,12 +27,21 @@ public class SocketConnection extends Thread
 			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
 			
+			printWriter.println("/AUTH:" + ClientCore.instance().username);
+			
 			String readerLine = "";
 			boolean doneReading = false;
 			
 			while((readerLine = bufferedReader.readLine()) != null && !doneReading)
 			{
-				System.out.println(readerLine.trim());
+				if(readerLine.trim().startsWith("/warning"))
+				{
+					String[] split = readerLine.trim().split(":");
+					JOptionPane.showMessageDialog(ClientCore.instance().theGui, split[1], "Warning", JOptionPane.WARNING_MESSAGE);
+					ClientCore.instance().disconnect();
+					return;
+				}
+				
 				ClientCore.instance().theGui.appendChat(readerLine.trim());
 			}
 			
