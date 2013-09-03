@@ -337,6 +337,13 @@ public class GuiClient extends JFrame implements WindowListener
 				return;
 			}
 			
+			if(!Util.isValidUsername(usernameField.getText()))
+			{
+				JOptionPane.showMessageDialog(GuiClient.this, "Invalid username.\nA username must be at most 16 characters long,\nand only alphabetic characters or digits may be used.", "Warning", JOptionPane.WARNING_MESSAGE);
+				usernameField.setText("");
+				return;
+			}
+			
 			if(usernameField.getText().equals(ClientCore.instance().username))
 			{
 				return;
@@ -408,10 +415,9 @@ public class GuiClient extends JFrame implements WindowListener
 				
 				if(ClientCore.instance().state == ConnectionState.CONNECTED && ClientCore.instance().activeConnection.printWriter != null)
 				{
-					appendChat("You: " + command);
-					ClientCore.instance().activeConnection.printWriter.println(command);
+					ClientCore.instance().activeConnection.printWriter.println("/msg:" + command);
 				}
-			} catch (Exception e) {
+			} catch(Exception e) {
 				appendChat("Error: " + e.getMessage());
 				e.printStackTrace();
 			}

@@ -12,6 +12,24 @@ public final class Util
 		return label;
 	}
 	
+	public static boolean isValidUsername(String username)
+	{
+		if(username.length() > 16)
+		{
+			return false;
+		}
+		
+		for(Character c : username.toCharArray())
+		{
+			if(!Character.isLetter(c) && !Character.isDigit(c))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public static boolean isVaildIP(String ip)
 	{
 		if(ip.equals("localhost"))
