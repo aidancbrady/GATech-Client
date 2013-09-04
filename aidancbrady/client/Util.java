@@ -12,6 +12,16 @@ public final class Util
 		return label;
 	}
 	
+	public static boolean isValidMessage(String message)
+	{
+		if(message.length() > 500)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public static boolean isValidUsername(String username)
 	{
 		if(username.length() > 16)

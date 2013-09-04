@@ -406,10 +406,17 @@ public class GuiClient extends JFrame implements WindowListener
 		{
 			try {
 				chatField.setText("");
+				
 				String command = arg0.getActionCommand().trim().toLowerCase();
 				
 				if(command == null || command.equals(""))
 				{
+					return;
+				}
+				
+				if(!Util.isValidMessage(command))
+				{
+					JOptionPane.showMessageDialog(GuiClient.this, "Invalid message.\nA message must be at most 500 characters.", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				
