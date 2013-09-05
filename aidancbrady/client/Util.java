@@ -22,6 +22,26 @@ public final class Util
 		return true;
 	}
 	
+	public static String trimMessage(String message)
+	{
+		StringBuilder builder = new StringBuilder();
+		int charCount = 0;
+		
+		for(Character c : message.toCharArray())
+		{
+			charCount++;
+			
+			if(charCount == 50)
+			{
+				builder.append("\n");
+			}
+			
+			builder.append(c);
+		}
+		
+		return builder.toString();
+	}
+	
 	public static boolean isValidUsername(String username)
 	{
 		if(username.length() > 16)

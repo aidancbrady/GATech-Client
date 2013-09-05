@@ -33,7 +33,7 @@ public class SocketConnection extends Thread
 			bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
 			
-			printWriter.println("/AUTH:" + ClientCore.instance().username);
+			printWriter.println("/auth:" + ClientCore.instance().username);
 			
 			String readerLine = "";
 			boolean doneReading = false;
@@ -51,6 +51,27 @@ public class SocketConnection extends Thread
 				{
 					String[] split = readerLine.trim().split(":");
 					ClientCore.instance().setUsername(split[1]);
+					continue;
+				}
+				else if(readerLine.trim().startsWith("/auth"))
+				{
+					String[] split = readerLine.trim().split(":");
+					ClientCore.instance().userJoined(split[1]);
+					ClientCore.instance().theGui.appendChat("<" + split[1] + " has joined>");
+					continue;
+				}
+				else if(readerLine.trim().startsWith("/deauth"))
+				{
+					String[] split = readerLine.trim().split(":");
+					ClientCore.instance().userLeft(split[1]);
+					ClientCore.instance().theGui.appendChat("<" + split[1] + " has left>");
+					continue;
+				}
+				else if(readerLine.trim().startsWith("/popuser"))
+				{
+					System.out.println("GOT");
+					String[] split = readerLine.trim().split(":");
+					ClientCore.instance().userJoined(split[1]);
 					continue;
 				}
 				

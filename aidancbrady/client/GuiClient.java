@@ -73,10 +73,10 @@ public class GuiClient extends JFrame implements WindowListener
 				
 				Vector<String> userVector = new Vector<String>();
 				
-				/*for(ServerConnection connection : ServerCore.instance().connections.values())
+				for(ClientUser user : ClientCore.instance().usersOnline)
 				{
-					userVector.add(connection.getUserID() + ": " + (connection.isAuthenticated() ? connection.user.username : "Guest"));
-				}*/
+					userVector.add(user.username);
+				}
 				
 				if(userVector.isEmpty())
 				{
@@ -93,7 +93,7 @@ public class GuiClient extends JFrame implements WindowListener
 				
 				Vector<String> statsVector = new Vector<String>();
 				statsVector.add("Connected: " + ClientCore.instance().state.description);
-				//statsVector.add("Online count: " + ServerCore.instance().connections.size());
+				statsVector.add("Online count: " + ClientCore.instance().usersOnline.size());
 				statsVector.add("Active threads: " + Thread.activeCount());
 				statsVector.add("Active memory: " + (int)((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/1000000) + "MB");
 				statsVector.add("Total memory: " + (int)(Runtime.getRuntime().totalMemory()/1000000) + "MB");
@@ -121,33 +121,6 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		//Start user list panel
 		onlineUsersList = new JList();
-		
-		/*onlineUsersList.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseClicked(MouseEvent event)
-			{
-				if(event.getClickCount() == 2)
-				{
-					if(!((String)onlineUsersList.getSelectedValue()).equals("No users online."))
-					{
-						int id = Integer.parseInt(((String)onlineUsersList.getSelectedValue()).split(":")[0]);
-						ServerConnection connection = ServerCore.instance().connections.get(id);
-						
-						if(connection != null)
-						{
-							if(!connection.isAuthenticated())
-							{
-								new GuiConnectionInfo(id);
-							}
-							else {
-								new GuiCacheInfo(connection.user.username);
-							}
-						}
-					}
-				}
-			}
-		});*/
 		
 		onlineUsersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		onlineUsersList.setBorder(new TitledBorder(new EtchedBorder(), "Online Users"));
@@ -420,9 +393,14 @@ public class GuiClient extends JFrame implements WindowListener
 					return;
 				}
 				
+				command = Util.trimMessage(command);
+				
 				if(ClientCore.instance().state == ConnectionState.CONNECTED && ClientCore.instance().activeConnection.printWriter != null)
 				{
 					ClientCore.instance().activeConnection.printWriter.println("/msg:" + command);
+				}
+				else {
+					appendChat("[Disconnected]: " + command);
 				}
 			} catch(Exception e) {
 				appendChat("Error: " + e.getMessage());

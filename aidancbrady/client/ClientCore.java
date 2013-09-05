@@ -1,10 +1,15 @@
 package aidancbrady.client;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.JOptionPane;
 
 public class ClientCore
 {
 	private static ClientCore instance;
+	
+	public Set<ClientUser> usersOnline = new HashSet<ClientUser>();
 	
 	public ConnectionState state = ConnectionState.DISCONNECTED;
 	
@@ -22,6 +27,35 @@ public class ClientCore
 	{
 		instance = new ClientCore();
 		instance.init();
+	}
+	
+	public void userJoined(String username)
+	{
+		for(ClientUser user : usersOnline)
+		{
+			if(user.username.equals(username))
+			{
+				return;
+			}
+		}
+		
+		usersOnline.add(new ClientUser(username));
+	}
+	
+	public void userLeft(String username)
+	{
+		ClientUser toRemove = null;
+		
+		for(ClientUser user : usersOnline)
+		{
+			if(user.username.equals(username))
+			{
+				toRemove = user;
+				break;
+			}
+		}
+		
+		usersOnline.remove(toRemove);
 	}
 	
 	public void init()
@@ -98,6 +132,8 @@ public class ClientCore
 			{
 				activeConnection.socket.close();
 			}
+			
+			usersOnline.clear();
 			
 			updateState(ConnectionState.DISCONNECTED);
 			
