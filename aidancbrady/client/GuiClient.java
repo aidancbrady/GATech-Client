@@ -32,9 +32,9 @@ public class GuiClient extends JFrame implements WindowListener
 {
 	private static final long serialVersionUID = 1L;
 	
-	private JTextArea chatBox;
+	public JTextArea chatBox;
 	
-	private JList statistics;
+	public JList statistics;
 	
 	public JList onlineUsersList;
 	
@@ -130,8 +130,7 @@ public class GuiClient extends JFrame implements WindowListener
 		onlineUsersList.setSelectionInterval(1, 1);
 		onlineUsersList.setBackground(Color.GRAY);
 		onlineUsersList.setToolTipText("The users currently connected to this server.");
-		JScrollPane onlinePane = new JScrollPane(onlineUsersList);
-		rightInfoPanel.add(onlinePane);
+		rightInfoPanel.add(new JScrollPane(onlineUsersList));
 		//End user list panel
 		
 		//Start port setter panel
@@ -199,7 +198,6 @@ public class GuiClient extends JFrame implements WindowListener
 		usernamePanel.setVisible(true);
 		usernamePanel.setBackground(Color.GRAY);
 		usernamePanel.setFocusable(false);
-		usernamePanel.setPreferredSize(new Dimension(206-15, 200));
 		usernamePanel.setToolTipText("Set your username to a new value.");
 		
 		JLabel sideLabel = new JLabel("Username:");
@@ -237,7 +235,9 @@ public class GuiClient extends JFrame implements WindowListener
 		statistics.setBackground(Color.GRAY);
 		statistics.setFocusable(false);
 		statistics.setToolTipText("Statistics regarding this server.");
-		leftInfoPanel.add(new JScrollPane(statistics), "South");
+		JScrollPane statScroll = new JScrollPane(statistics);
+		statScroll.setPreferredSize(new Dimension(206-15, 180));
+		leftInfoPanel.add(statScroll, "South");
 		//End statistics panel
 		
 		completePanel.add(leftInfoPanel, "West");
@@ -380,7 +380,7 @@ public class GuiClient extends JFrame implements WindowListener
 			try {
 				chatField.setText("");
 				
-				String command = arg0.getActionCommand().trim().toLowerCase();
+				String command = arg0.getActionCommand().trim();
 				
 				if(command == null || command.equals(""))
 				{
