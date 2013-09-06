@@ -12,6 +12,29 @@ public final class Util
 		return label;
 	}
 	
+	public static String getMessage(String toSplit)
+	{
+		StringBuilder builder = new StringBuilder();
+		boolean foundSplitter = false;
+		
+		for(Character c : toSplit.toCharArray())
+		{
+			if(!foundSplitter)
+			{
+				if(c.equals(':'))
+				{
+					foundSplitter = true;
+					continue;
+				}
+			}
+			else {
+				builder.append(c);
+			}
+		}
+		
+		return builder.toString();
+	}
+	
 	public static boolean isValidMessage(String message)
 	{
 		if(message.length() > 500)

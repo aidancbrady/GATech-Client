@@ -9,6 +9,8 @@ public class ClientCore
 {
 	private static ClientCore instance;
 	
+	public String discussion;
+	
 	public Set<ClientUser> usersOnline = new HashSet<ClientUser>();
 	
 	public ConnectionState state = ConnectionState.DISCONNECTED;
@@ -134,6 +136,9 @@ public class ClientCore
 			}
 			
 			usersOnline.clear();
+			discussion = null;
+			theGui.discussionLabel.setText("Discussion: Undefined");
+			theGui.chatBox.setText("Disconnected.");
 			
 			updateState(ConnectionState.DISCONNECTED);
 			

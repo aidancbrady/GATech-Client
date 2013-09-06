@@ -56,6 +56,8 @@ public class GuiClient extends JFrame implements WindowListener
 	
 	public JTextField usernameField;
 	
+	public JLabel discussionLabel;
+	
 	public boolean isOpen = true;
 	
 	public Timer timer;
@@ -188,6 +190,9 @@ public class GuiClient extends JFrame implements WindowListener
 			}
 		});
 		serverControlPanel.add(disconnectButton, "South");
+		
+		discussionLabel = new JLabel("Discussion: Undefined");
+		serverControlPanel.add(discussionLabel, "South");
 		
 		leftInfoPanel.add(serverControlPanel, "North");
 		//End port setter panel

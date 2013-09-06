@@ -69,9 +69,19 @@ public class SocketConnection extends Thread
 				}
 				else if(readerLine.trim().startsWith("/popuser"))
 				{
-					System.out.println("GOT");
 					String[] split = readerLine.trim().split(":");
 					ClientCore.instance().userJoined(split[1]);
+					continue;
+				}
+				else if(readerLine.trim().startsWith("/discname"))
+				{
+					String[] split = readerLine.trim().split(":");
+					ClientCore.instance().discussion = split[1];
+					ClientCore.instance().theGui.discussionLabel.setText("Discussion: " + split[1]);
+				}
+				else if(readerLine.trim().startsWith("/chatlog"))
+				{
+					ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()));
 					continue;
 				}
 				
