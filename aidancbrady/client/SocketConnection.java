@@ -81,7 +81,7 @@ public class SocketConnection extends Thread
 				}
 				else if(readerLine.trim().startsWith("/chatlog"))
 				{
-					ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()));
+					ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()).replace("#NL#", "\n"));
 					continue;
 				}
 				
