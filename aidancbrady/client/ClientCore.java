@@ -122,6 +122,19 @@ public class ClientCore
 		}
 	}
 	
+	public void updateDiscussion(String name)
+	{
+		if(name == null || name.equals(""))
+		{
+			discussion = null;
+			theGui.discussionLabel.setText("Discussion: Undefined");
+		}
+		else {
+			discussion = name;
+			theGui.discussionLabel.setText("Discussion: " + name);
+		}
+	}
+	
 	public void disconnect()
 	{
 		try {
@@ -136,8 +149,7 @@ public class ClientCore
 			}
 			
 			usersOnline.clear();
-			discussion = null;
-			theGui.discussionLabel.setText("Discussion: Undefined");
+			updateDiscussion(null);
 			theGui.chatBox.setText("Disconnected.");
 			
 			updateState(ConnectionState.DISCONNECTED);

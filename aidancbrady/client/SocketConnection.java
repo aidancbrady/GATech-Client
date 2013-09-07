@@ -9,8 +9,6 @@ import java.net.SocketException;
 
 import javax.swing.JOptionPane;
 
-import aidancbrady.client.ClientCore.ConnectionState;
-
 public class SocketConnection extends Thread
 {
 	public Socket socket;
@@ -76,12 +74,25 @@ public class SocketConnection extends Thread
 				else if(readerLine.trim().startsWith("/discname"))
 				{
 					String[] split = readerLine.trim().split(":");
-					ClientCore.instance().discussion = split[1];
-					ClientCore.instance().theGui.discussionLabel.setText("Discussion: " + split[1]);
+					
+					if(split.length == 1)
+					{
+						ClientCore.instance().updateDiscussion(null);
+						continue;
+					}
+					
+					ClientCore.instance().updateDiscussion(split[1]);
+					continue;
 				}
 				else if(readerLine.trim().startsWith("/chatlog"))
 				{
 					ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()).replace("#NL#", "\n"));
+					continue;
+				}
+				else if(readerLine.trim().startsWith("/clear"))
+				{
+					ClientCore.instance().theGui.chatBox.setText("");
+					ClientCore.instance().theGui.appendChat("");
 					continue;
 				}
 				
