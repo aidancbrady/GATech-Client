@@ -31,7 +31,7 @@ public class ClientCore
 		instance.init();
 	}
 	
-	public void userJoined(String username)
+	public void userJoined(String username, String mod)
 	{
 		for(ClientUser user : usersOnline)
 		{
@@ -41,7 +41,7 @@ public class ClientCore
 			}
 		}
 		
-		usersOnline.add(new ClientUser(username));
+		usersOnline.add(new ClientUser(username, mod.equals("yes") ? true : false));
 	}
 	
 	public void userLeft(String username)
@@ -92,6 +92,17 @@ public class ClientCore
 	{
 		username = name;
 		theGui.usernameLabel.setText(name);
+	}
+	
+	public void updateModeratorName(String name)
+	{
+		for(ClientUser user : usersOnline)
+		{
+			if(user.isModerator)
+			{
+				user.username = name;
+			}
+		}
 	}
 	
 	public void connect()

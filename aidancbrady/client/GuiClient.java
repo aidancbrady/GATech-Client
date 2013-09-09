@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -77,7 +78,13 @@ public class GuiClient extends JFrame implements WindowListener
 				
 				for(ClientUser user : ClientCore.instance().usersOnline)
 				{
-					userVector.add(user.username);
+					if(user.isModerator)
+					{
+						userVector.add(0, "[Mod] " + user.username);
+					}
+					else {
+						userVector.add(user.username);
+					}
 				}
 				
 				if(userVector.isEmpty())
@@ -112,7 +119,8 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		JPanel completePanel = new JPanel(new BorderLayout());
 		
-		JPanel leftInfoPanel = new JPanel(new BorderLayout());
+		JPanel leftInfoPanel = new JPanel();
+		leftInfoPanel.setLayout(new BoxLayout(leftInfoPanel, BoxLayout.Y_AXIS));
 		leftInfoPanel.setPreferredSize(new Dimension(206, 800));
 		
 		JPanel rightInfoPanel = new JPanel(new BorderLayout());
@@ -141,7 +149,7 @@ public class GuiClient extends JFrame implements WindowListener
 		serverControlPanel.setVisible(true);
 		serverControlPanel.setBackground(Color.GRAY);
 		serverControlPanel.setFocusable(false);
-		serverControlPanel.setPreferredSize(new Dimension(206-15, 180));
+		serverControlPanel.setPreferredSize(new Dimension(206-15, 100));
 		serverControlPanel.setToolTipText("Set this server's active port to a new value.");
 		
 		connectedLabel = Util.getWithFont(new JLabel("Idle -"), new Font("Arial", Font.BOLD, 14));
@@ -241,7 +249,7 @@ public class GuiClient extends JFrame implements WindowListener
 		statistics.setFocusable(false);
 		statistics.setToolTipText("Statistics regarding this server.");
 		JScrollPane statScroll = new JScrollPane(statistics);
-		statScroll.setPreferredSize(new Dimension(206-15, 180));
+		statScroll.setPreferredSize(new Dimension(206-15, 80));
 		leftInfoPanel.add(statScroll, "South");
 		//End statistics panel
 		

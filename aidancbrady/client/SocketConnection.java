@@ -38,68 +38,76 @@ public class SocketConnection extends Thread
 			
 			while((readerLine = bufferedReader.readLine()) != null && !doneReading)
 			{
-				if(readerLine.trim().startsWith("/warning"))
+				String message = readerLine.trim();
+				
+				if(message.startsWith("/"))
 				{
-					String[] split = readerLine.trim().split(":");
-					JOptionPane.showMessageDialog(ClientCore.instance().theGui, split[1], "Warning", JOptionPane.WARNING_MESSAGE);
-					ClientCore.instance().disconnect();
-					return;
-				}
-				else if(readerLine.trim().startsWith("/user"))
-				{
-					String[] split = readerLine.trim().split(":");
-					ClientCore.instance().setUsername(split[1]);
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/auth"))
-				{
-					String[] split = readerLine.trim().split(":");
-					ClientCore.instance().userJoined(split[1]);
-					ClientCore.instance().theGui.appendChat("<" + split[1] + " has joined>");
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/deauth"))
-				{
-					String[] split = readerLine.trim().split(":");
-					ClientCore.instance().userLeft(split[1]);
-					ClientCore.instance().theGui.appendChat("<" + split[1] + " has left>");
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/popuser"))
-				{
-					String[] split = readerLine.trim().split(":");
-					ClientCore.instance().userJoined(split[1]);
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/discname"))
-				{
-					String[] split = readerLine.trim().split(":");
+					message = message.substring(1);
+					String[] params = message.split(":");
+					String command = params[0];
 					
-					if(split.length == 1)
+					if(command.equals("warning"))
 					{
-						ClientCore.instance().updateDiscussion(null);
+						JOptionPane.showMessageDialog(ClientCore.instance().theGui, params[1], "Warning", JOptionPane.WARNING_MESSAGE);
+						ClientCore.instance().disconnect();
+						return;
+					}
+					else if(command.equals("user"))
+					{
+						ClientCore.instance().setUsername(params[1]);
 						continue;
 					}
-					
-					ClientCore.instance().updateDiscussion(split[1]);
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/chatlog"))
-				{
-					ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()).replace("#NL#", "\n"));
-					continue;
-				}
-				else if(readerLine.trim().startsWith("/clear"))
-				{
-					ClientCore.instance().theGui.chatBox.setText("");
-					ClientCore.instance().theGui.appendChat("");
-					continue;
+					else if(command.equals("auth"))
+					{
+						ClientCore.instance().userJoined(params[1], "no");
+						ClientCore.instance().theGui.appendChat("<" + params[1] + " has joined>");
+						continue;
+					}
+					else if(command.equals("deauth"))
+					{
+						ClientCore.instance().userLeft(params[1]);
+						ClientCore.instance().theGui.appendChat("<" + params[1] + " has left>");
+						continue;
+					}
+					else if(command.equals("popuser"))
+					{
+						ClientCore.instance().userJoined(params[1], params[2]);
+						continue;
+					}
+					else if(command.equals("discname"))
+					{
+						if(params.length == 1)
+						{
+							ClientCore.instance().updateDiscussion(null);
+							continue;
+						}
+						
+						ClientCore.instance().updateDiscussion(params[1]);
+						continue;
+					}
+					else if(command.equals("chatlog"))
+					{
+						ClientCore.instance().theGui.chatBox.setText(Util.getMessage(readerLine.trim()).replace("#NL#", "\n"));
+						continue;
+					}
+					else if(command.equals("clear"))
+					{
+						ClientCore.instance().theGui.chatBox.setText("");
+						ClientCore.instance().theGui.appendChat("");
+						continue;
+					}
+					else if(command.equals("modname"))
+					{
+						ClientCore.instance().updateModeratorName(params[1]);
+						continue;
+					}
 				}
 				
-				ClientCore.instance().theGui.appendChat(readerLine.trim());
+				ClientCore.instance().theGui.appendChat(message);
 			}
 			
 			printWriter.close();
+			bufferedReader.close();
 			socket.close();
 			
 			ClientCore.instance().disconnect();
