@@ -63,6 +63,10 @@ public class ClientCore
 	public void init()
 	{
 		try {
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "ClientCore");
+		} catch(Exception e) {}
+		
+		try {
 			theGui = new GuiClient();
 			
 			synchronized(this)
