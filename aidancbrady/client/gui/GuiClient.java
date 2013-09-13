@@ -1,4 +1,4 @@
-package aidancbrady.client;
+package aidancbrady.client.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -16,17 +17,24 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import aidancbrady.client.ClientCore;
+import aidancbrady.client.ClientUser;
+import aidancbrady.client.Util;
 import aidancbrady.client.ClientCore.ConnectionState;
 
 public class GuiClient extends JFrame implements WindowListener
@@ -58,6 +66,8 @@ public class GuiClient extends JFrame implements WindowListener
 	public JTextField usernameField;
 	
 	public JLabel discussionLabel;
+	
+	public ClientMenu clientMenu = new ClientMenu();
 	
 	public boolean isOpen = true;
 	
@@ -300,6 +310,8 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		completePanel.add(mainPanel, "Center");
 		add(completePanel);
+		
+		setJMenuBar(clientMenu.menuBar);
 		
 		addWindowListener(this);
 		setSize(854, 580);

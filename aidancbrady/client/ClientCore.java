@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import aidancbrady.client.gui.GuiClient;
+
 public class ClientCore
 {
 	private static ClientCore instance;
@@ -64,6 +66,7 @@ public class ClientCore
 	{
 		try {
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "ClientCore");
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		} catch(Exception e) {}
 		
 		try {
@@ -132,6 +135,9 @@ public class ClientCore
 			theGui.connectionField.setEnabled(false);
 			theGui.connectButton.setEnabled(false);
 			theGui.disconnectButton.setEnabled(true);
+			
+			theGui.clientMenu.connectItem.setEnabled(false);
+			theGui.clientMenu.disconnectItem.setEnabled(true);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -173,6 +179,9 @@ public class ClientCore
 			theGui.connectionField.setEnabled(true);
 			theGui.connectButton.setEnabled(true);
 			theGui.disconnectButton.setEnabled(false);
+			
+			theGui.clientMenu.connectItem.setEnabled(true);
+			theGui.clientMenu.disconnectItem.setEnabled(false);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

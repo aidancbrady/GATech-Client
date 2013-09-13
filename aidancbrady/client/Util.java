@@ -1,6 +1,7 @@
 package aidancbrady.client;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 
 import javax.swing.JLabel;
 
@@ -109,5 +110,10 @@ public final class Util
 		}
 		
 		return true;
+	}
+	
+	public static int getActionKey()
+	{
+		return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 	}
 }
