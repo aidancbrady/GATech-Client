@@ -6,26 +6,23 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -33,9 +30,10 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import aidancbrady.client.ClientCore;
-import aidancbrady.client.ClientUser;
-import aidancbrady.client.Util;
 import aidancbrady.client.ClientCore.ConnectionState;
+import aidancbrady.client.ClientUser;
+import aidancbrady.client.FileHandler;
+import aidancbrady.client.Util;
 
 public class GuiClient extends JFrame implements WindowListener
 {
@@ -155,7 +153,7 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		//Start port setter panel
 		JPanel serverControlPanel = new JPanel();
-		serverControlPanel.setBorder(new TitledBorder(new EtchedBorder(), "Server Control"));
+		serverControlPanel.setBorder(new TitledBorder(new EtchedBorder(), "Client Control"));
 		serverControlPanel.setVisible(true);
 		serverControlPanel.setBackground(Color.GRAY);
 		serverControlPanel.setFocusable(false);
@@ -209,9 +207,6 @@ public class GuiClient extends JFrame implements WindowListener
 		});
 		serverControlPanel.add(disconnectButton, "South");
 		
-		discussionLabel = new JLabel("Discussion: Undefined");
-		serverControlPanel.add(discussionLabel, "South");
-		
 		leftInfoPanel.add(serverControlPanel, "North");
 		//End port setter panel
 		
@@ -244,6 +239,71 @@ public class GuiClient extends JFrame implements WindowListener
 		
 		leftInfoPanel.add(usernamePanel);
 		//End username panel
+		
+		//Start discussion panel
+		JPanel discussionPanel = new JPanel();
+		discussionPanel.setBorder(new TitledBorder(new EtchedBorder(), "Discussion"));
+		discussionPanel.setVisible(true);
+		discussionPanel.setBackground(Color.GRAY);
+		discussionPanel.setFocusable(false);
+		discussionPanel.setToolTipText("Save and open discussions.");
+		
+		discussionLabel = new JLabel("Discussion: Undefined");
+		discussionPanel.add(discussionLabel, "North");
+		
+		JButton saveButton = new JButton("Save");
+		saveButton.setFocusable(true);
+		saveButton.setPreferredSize(new Dimension(80, 25));
+		saveButton.setEnabled(true);
+		saveButton.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if(ClientCore.instance().discussion == null || ClientCore.instance().discussion.isEmpty())
+				{
+					return;
+				}
+				
+				FileHandler.saveDiscussion();
+			}
+		});
+		discussionPanel.add(saveButton, "South");
+		
+		JButton openButton = new JButton("Open");
+		openButton.setFocusable(true);
+		openButton.setPreferredSize(new Dimension(80, 25));
+		openButton.setEnabled(true);
+		openButton.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if(ClientCore.instance().state == ConnectionState.CONNECTED)
+				{
+					JOptionPane.showMessageDialog(GuiClient.this, "Cannot change discussion while connected to server.", "Warning", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				if(!FileHandler.discussionsDir.exists())
+				{
+					FileHandler.discussionsDir.mkdirs();
+				}
+				
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(FileHandler.discussionsDir);
+				int returnVal = chooser.showOpenDialog(GuiClient.this);
+				
+				if(returnVal == JFileChooser.APPROVE_OPTION)
+				{
+					FileHandler.openDiscussion(chooser.getSelectedFile());
+				}
+			}
+		});
+		discussionPanel.add(openButton, "South");
+		
+		leftInfoPanel.add(discussionPanel);
+		//End discussion panel
 		
 		//Start statistics panel
 		statistics = new JList();
