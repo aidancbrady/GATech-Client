@@ -13,6 +13,12 @@ public final class Util
 		return label;
 	}
 	
+	public static void updateWithFont(JLabel label, String text, Font font)
+	{
+		label.setText(text);
+		label.setFont(font);
+	}
+	
 	public static String getMessage(String toSplit)
 	{
 		StringBuilder builder = new StringBuilder();

@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -248,8 +247,11 @@ public class GuiClient extends JFrame implements WindowListener
 		discussionPanel.setFocusable(false);
 		discussionPanel.setToolTipText("Save and open discussions.");
 		
-		discussionLabel = new JLabel("Discussion: Undefined");
+		discussionLabel = Util.getWithFont(new JLabel("Undefined"), new Font("Arial", Font.BOLD, 14));
 		discussionPanel.add(discussionLabel, "North");
+		
+		JPanel discussionButtons = new JPanel();
+		discussionButtons.setBackground(Color.GRAY);
 		
 		JButton saveButton = new JButton("Save");
 		saveButton.setFocusable(true);
@@ -268,7 +270,7 @@ public class GuiClient extends JFrame implements WindowListener
 				FileHandler.saveDiscussion();
 			}
 		});
-		discussionPanel.add(saveButton, "South");
+		discussionButtons.add(saveButton);
 		
 		JButton openButton = new JButton("Open");
 		openButton.setFocusable(true);
@@ -300,7 +302,26 @@ public class GuiClient extends JFrame implements WindowListener
 				}
 			}
 		});
-		discussionPanel.add(openButton, "South");
+		discussionButtons.add(openButton);
+		
+		discussionPanel.add(discussionButtons, "South");
+		
+		JButton resyncButton = new JButton("Resync");
+		resyncButton.setFocusable(true);
+		resyncButton.setPreferredSize(new Dimension(120, 25));
+		resyncButton.setEnabled(true);
+		resyncButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if(ClientCore.instance().state == ConnectionState.CONNECTED)
+				{
+					ClientCore.instance().activeConnection.printWriter.println("/resync");
+				}
+			}
+		});
+		discussionPanel.add(resyncButton);
 		
 		leftInfoPanel.add(discussionPanel);
 		//End discussion panel

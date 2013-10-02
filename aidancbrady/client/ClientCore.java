@@ -1,5 +1,6 @@
 package aidancbrady.client;
 
+import java.awt.Font;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -148,11 +149,11 @@ public class ClientCore
 		if(name == null || name.equals(""))
 		{
 			discussion = null;
-			theGui.discussionLabel.setText("Discussion: Undefined");
+			Util.updateWithFont(theGui.discussionLabel, "Undefined", new Font("Arial", Font.BOLD, 14));
 		}
 		else {
 			discussion = name;
-			theGui.discussionLabel.setText("Discussion: " + name);
+			Util.updateWithFont(theGui.discussionLabel, name, new Font("Arial", Font.BOLD, 14));
 		}
 	}
 	
