@@ -93,7 +93,6 @@ public class SocketConnection extends Thread
 					else if(command.equals("clear"))
 					{
 						ClientCore.instance().theGui.chatBox.setText("");
-						ClientCore.instance().theGui.appendChat("");
 						continue;
 					}
 					else if(command.equals("modname"))

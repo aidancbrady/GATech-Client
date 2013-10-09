@@ -3,14 +3,18 @@ package aidancbrady.client;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
 public final class FileHandler 
 {
-	public static final File discussionsDir = new File(getHomeDirectory() + "/Documents/Discussions/Client");
+	public static final File discussionsDir = new File(getHomeDirectory() + "/Documents/Chatter/Discussions/Client");
+	public static final File dataDir = new File(getHomeDirectory() + "/Documents/Chatter/Data/Client");
 	
 	public static String getHomeDirectory()
 	{
@@ -77,6 +81,75 @@ public final class FileHandler
 			reader.close();
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static void loadProperties()
+	{
+		try {
+			Properties properties = new Properties();
+			
+			if(!dataDir.exists())
+			{
+				dataDir.mkdirs();
+			}
+			
+			File file = new File(dataDir.getAbsolutePath() + "/CachedProps.txt");
+			
+			if(!file.exists())
+			{
+				return;
+			}
+			
+			properties.load(new FileInputStream(file));
+			
+			if(properties.containsKey("ip"))
+			{
+				ClientCore.instance().setIP(properties.getProperty("ip"));
+			}
+			
+			if(properties.containsKey("username"))
+			{
+				ClientCore.instance().setUsername(properties.getProperty("username"));
+			}
+		} catch(Exception e) {
+			System.out.println("An error ocurred while reading properties.");
+		}
+	}
+	
+	public static void saveProperties()
+	{
+		try {
+			Properties properties = new Properties();
+			
+			if(!dataDir.exists())
+			{
+				dataDir.mkdirs();
+			}
+			
+			File file = new File(dataDir.getAbsolutePath() + "/CachedProps.txt");
+			
+			if(!file.exists())
+			{
+				file.createNewFile();
+			}
+			
+			FileOutputStream outputStream = new FileOutputStream(file);
+			
+			if(ClientCore.instance().serverIP != null)
+			{
+				properties.setProperty("ip", ClientCore.instance().serverIP + ":" + ClientCore.instance().serverPort);
+			}
+			
+			if(ClientCore.instance().username != null)
+			{
+				properties.setProperty("username", ClientCore.instance().username);
+			}
+			
+			properties.store(outputStream, "Server Cached Properties");
+			outputStream.close();
+		} catch(Exception e) {
+			System.out.println("An error ocurred while saving properties.");
 		}
 	}
 }

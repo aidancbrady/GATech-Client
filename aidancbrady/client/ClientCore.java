@@ -47,6 +47,14 @@ public class ClientCore
 		usersOnline.add(new ClientUser(username, mod.equals("yes") ? true : false));
 	}
 	
+	public void setIP(String ip)
+	{
+		serverIP = ip.split(":")[0];
+		serverPort = Integer.parseInt(ip.split(":")[1]);
+		theGui.portLabel.setText(serverIP + ":" + serverPort);
+		FileHandler.saveProperties();
+	}
+	
 	public void userLeft(String username)
 	{
 		ClientUser toRemove = null;
@@ -66,12 +74,13 @@ public class ClientCore
 	public void init()
 	{
 		try {
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "ClientCore");
+			System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Chatter (Client)");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		} catch(Exception e) {}
 		
 		try {
 			theGui = new GuiClient();
+			FileHandler.loadProperties();
 			
 			synchronized(this)
 			{
@@ -100,6 +109,7 @@ public class ClientCore
 	{
 		username = name;
 		theGui.usernameLabel.setText(name);
+		FileHandler.saveProperties();
 	}
 	
 	public void updateModeratorName(String name)
@@ -109,6 +119,7 @@ public class ClientCore
 			if(user.isModerator)
 			{
 				user.username = name;
+				break;
 			}
 		}
 	}
