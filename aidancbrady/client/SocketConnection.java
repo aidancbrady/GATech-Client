@@ -69,6 +69,21 @@ public class SocketConnection extends Thread
 						ClientCore.instance().theGui.appendChat("<" + params[1] + " has left>");
 						continue;
 					}
+					else if(command.equals("namechange"))
+					{
+						String oldName = params[1];
+						String newName = params[2];
+						
+						for(ClientUser user : ClientCore.instance().usersOnline)
+						{
+							if(user.username.equals(oldName))
+							{
+								user.username = newName;
+							}
+						}
+						
+						continue;
+					}
 					else if(command.equals("popuser"))
 					{
 						ClientCore.instance().userJoined(params[1], params[2]);
