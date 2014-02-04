@@ -1,4 +1,4 @@
-package aidancbrady.client.gui;
+package com.aidancbrady.chatter.client.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -28,11 +28,11 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import aidancbrady.client.ClientCore;
-import aidancbrady.client.ClientCore.ConnectionState;
-import aidancbrady.client.ClientUser;
-import aidancbrady.client.FileHandler;
-import aidancbrady.client.Util;
+import com.aidancbrady.chatter.client.ClientCore;
+import com.aidancbrady.chatter.client.ClientUser;
+import com.aidancbrady.chatter.client.FileHandler;
+import com.aidancbrady.chatter.client.Util;
+import com.aidancbrady.chatter.client.ClientCore.ConnectionState;
 
 public class GuiClient extends JFrame implements WindowListener
 {

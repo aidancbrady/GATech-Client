@@ -1,4 +1,4 @@
-package aidancbrady.client;
+package com.aidancbrady.chatter.client;
 
 import java.awt.Font;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import aidancbrady.client.gui.GuiClient;
+import com.aidancbrady.chatter.client.gui.GuiClient;
 
 public class ClientCore
 {

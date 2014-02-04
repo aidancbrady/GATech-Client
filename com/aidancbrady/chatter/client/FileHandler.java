@@ -1,4 +1,4 @@
-package aidancbrady.client;
+package com.aidancbrady.chatter.client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

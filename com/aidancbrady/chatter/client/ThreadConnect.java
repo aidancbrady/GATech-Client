@@ -1,8 +1,8 @@
-package aidancbrady.client;
+package com.aidancbrady.chatter.client;
 
 import javax.swing.JOptionPane;
 
-import aidancbrady.client.ClientCore.ConnectionState;
+import com.aidancbrady.chatter.client.ClientCore.ConnectionState;
 
 public class ThreadConnect extends Thread
 {

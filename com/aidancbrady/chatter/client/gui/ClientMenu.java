@@ -1,4 +1,4 @@
-package aidancbrady.client.gui;
+package com.aidancbrady.chatter.client.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,8 +9,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import aidancbrady.client.ClientCore;
-import aidancbrady.client.Util;
+import com.aidancbrady.chatter.client.ClientCore;
+import com.aidancbrady.chatter.client.Util;
 
 public class ClientMenu 
 {
